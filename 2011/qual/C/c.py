@@ -1,51 +1,41 @@
 import sys
 
-def construct_table(nums):
-    table = []
-    lib = {"".join(['0' for i in range(0,len(nums))]):(0,0)}
-    table.append(lib)
+def find_overlap(nums):
+    table = [{0:''}]
     for i in range(1,len(nums)+1):
-	lib = table[i-1]
-        newlib = {}
-	for j in range(0, len(nums)):
-	    for key in lib.keys():
-	        if key[j] == '0':
-		    newkey =  key[:j] + '1' + key[j+1:]
-		    if not newlib.has_key(newkey):
-   		        newlib[newkey] = (lib[key][0]^nums[j],lib[key][1]+nums[j])
-	table.append(newlib)
-    return table
-
-def invert_key(key):
-    newkey = []
-    for i in range(0,len(key)):
-	if key[i] == '1':
-	    newkey.append('0')
-	else:
-	    newkey.append('1')
-    return "".join(newkey)
-
-def find_max(table):
-    levels = len(table)-1
-    max_total = -1
-    for a in range(1,levels/2+1):
-	b = levels - a
+        newentry = {}
+        for key in table[i-1].keys():
+            newentry[nums[i-1]^key] = ''
+    results = []
+    for a in range(1, len(nums)/2+1):
+        b = len(nums)-a
         for key in table[a].keys():
-	    invert = invert_key(key)
-	    if table[b][invert][0] == table[a][key][0]:
-		sean = max([table[b][invert][1],table[a][key][1]])
-		if max_total < sean:
-		    max_total = sean
-    return max_total
+            if table[b].has_key(key):
+                
+def construct_table(nums):
+    table = {0:{0:''}}
+    for i in range(0,len(nums)):
+        for item in table.keys():
+            newnum = item^nums[i]
+            if not table.has_key(newnum):
+                table[newnum] = {}
+            for totals in table[item].keys():
+                table[newnum][totals+nums[i]] = ''                
+    return table
 
 def main():
     T = int(sys.stdin.readline())
     for t in range(1, T+1):
 	N = int(sys.stdin.readline())
 	nums = map(int, sys.stdin.readline().split(" "))
+	sums = sum(nums)
 	table = construct_table(nums)
-	result = find_max(table)
-        
+        #print table, sums
+        result = -1
+        for xorvalue in table.keys():
+            for total in table[xorvalue].keys():
+                if total != sums and total != 0 and table[xorvalue].has_key(sums-total):
+                    result = max([result,max([total,sums-total])])
         if result == -1:
 	    print "Case #%d: NO" % (t)
 	else:
