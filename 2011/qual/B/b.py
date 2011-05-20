@@ -9,14 +9,15 @@ def trans(comb, oppose, origin):
 	    result = result[:-1]
 	    result.append(newc)
 	    current = None
-	elif oppose.has_key(current):
+	elif i != len(origin)-1 and not comb.has_key(origin[i+1]+current) and oppose.has_key(current):
 	    for j in range(0,len(result)):
-		if oppose.get(result[j])==current:
+		if oppose.get(result[j]) and current in oppose[result[j]]:
 		    result= []
 		    current = None
 		    break
         if current != None:
     	    result.append(current)
+    	print result, origin[i+1:]
     return result
 
 def main():
@@ -33,9 +34,12 @@ def main():
 	D = int(inputs[C+1]) + C + 2
 	for i in range(C+2, D):
 	    tmp = inputs[i]
-	    oppose[tmp[0]] = tmp[1]
-	    oppose[tmp[1]] = tmp[0]
-#	N = inputs[D]
+	    if not oppose.has_key(tmp[0]):
+                oppose[tmp[0]] = []
+            oppose[tmp[0]].append(tmp[1])
+	    if not oppose.has_key(tmp[1]):
+                oppose[tmp[1]] = []
+            oppose[tmp[1]].append(tmp[0])
 	origin = inputs[D+1].strip()
 	result = trans(comb, oppose, origin)
 	
