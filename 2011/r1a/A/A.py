@@ -33,38 +33,27 @@ def main():
     T = int(sys.stdin.readline())
     for t in range(1,T+1):
         N, PD, PG = map(int, sys.stdin.readline().split(" "))
-        print ""
-        print N, PD, PG
-        lcm1 = lcm(PD, 100)
-        lcm2 = lcm(PG, 100)
-        if PD != 0:
-            d = lcm1 / PD
-            wd = lcm1 / 100
-        if PG != 0:
-            g = lcm2 / PG
-            w = lcm2 / 100
-        if (PD == 0 and PG == 0) or (PD == 0 and PG !=0):
-            print "Case #%d: %s" % (t, 'Possible')
+        #print ""
+        #print N, PD, PG
+        possible = "Case #%d: Possible"
+        broken = "Case #%d: Broken"
+        if (PD == 0 and PG == 0) or (PD == 0 and PG !=0 and PG != 100):
+            print possible % t
             continue
         elif PD !=0 and PG == 0:
-            print "Case #%d: %s" % (t, 'Broken')
+            print broken % t
             continue
-        
-        if PD >= PG:
-            scale = int(ceil(float(wd)/w))
+        elif PG == 100 and PD != 100:
+            print broken % t
+            continue
+        lcm1 = lcm(PD, 100)
+        d = lcm1 / PD
+        wd = lcm1 / 100
+        #print d, wd
+        if d > N:
+            print broken % t
         else:
-            if g-w != 0:
-                scale = int(ceil(float(d-wd)/(g-w)))
-            else:
-                scale = 0
-        w *= scale
-        g *= scale
-        print d, wd, d-wd
-        print g, w, g-w
-        if d > N or g < d:
-            print "Case #%d: %s" % (t, 'Broken')
-        else:
-            print "Case #%d: %s" % (t, 'Possible')
+            print possible % t
             
 if __name__ == '__main__':
     main()
