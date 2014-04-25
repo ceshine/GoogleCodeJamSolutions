@@ -13,20 +13,21 @@ if __name__ == "__main__":
     for t in xrange(1, T+1):
         C, F, X = map(float, raw_input("").split(" "))
         best_time = X / 2
-        builds = 1
+        builds = 0
         while True:
-            time = simulate(C, F, X, builds)
-            if time > best_time:
-                builds = builds / 2 + 1
+            step = 1
+            while True:
+                builds += step
+                time = simulate(C, F, X, builds)
+                previous = simulate(C, F, X, builds-1)
+                if time > best_time or time > previous:
+                    builds = builds - step
+                    break
+                step *= 2
+                best_time = time
+            if step == 1:
                 break
-            builds *= 2
-            best_time = time
-        while True:
-            time = simulate(C, F, X, builds)
-            if time > best_time:
-                break            
-            builds += 1
-            best_time = time        
+                
         print "Case #%d: %.7f" % (t, best_time)
 
         
