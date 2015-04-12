@@ -9,8 +9,10 @@ def serialize_pancakes(pancakes, n):
 def search(pancakes, n, specials):
     if n <= 3:
         return specials + n
+    if pancakes[n] >= n:
+        return specials + n
     best, best_divisor = n + specials, 1
-    for divisor in range(2, n-1):
+    for divisor in range(2, int(math.sqrt(n))+1):
         k = max((j if pancakes[j] else 0 for j in xrange(n)))
         max_product = n / divisor
         if n % divisor > 0:
@@ -23,6 +25,7 @@ def search(pancakes, n, specials):
         new_pancakes[n] = 0
         identifier = serialize_pancakes(new_pancakes, max(k, max_product))
         if identifier in cache:
+            #print "cache hit!", identifier
             local_result = cache[identifier] + local_specials + specials
         else:
             local_result = search(new_pancakes, max(k, max_product), local_specials + specials)
